@@ -1,0 +1,475 @@
+import * as Immutable from 'immutable';
+import type { Seq } from 'immutable';
+
+import { ArrayElement, DeepPartial } from './generics';
+
+Immutable.fromJS(true);
+
+type DetectMap<M> = M extends unknown[]
+  ? ImmutableList<ArrayElement<M>>
+  : M extends Record<string, any>
+  ? ImmutableMap<M>
+  : M;
+
+type DetectMapOrOrigin<M> = M extends unknown[]
+  ? ImmutableList<ArrayElement<M>> | M
+  : M extends Record<string, any>
+  ? ImmutableMap<M> | M
+  : M;
+
+type PrepareModel<T> = T;
+
+type NestedModel<Model> = Model;
+type KeyNestedModel<Model> = keyof NestedModel<Model>;
+type NestedModel2<Model, K extends KeyNestedModel<Model>> = PrepareModel<
+  NestedModel<Model>[K]
+>;
+type KeyNestedModel2<
+  Model,
+  K extends KeyNestedModel<Model>
+> = keyof NestedModel2<Model, K>;
+type NestedModel3<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>
+> = PrepareModel<NestedModel2<Model, K>[K2]>;
+type KeyNestedModel3<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>
+> = keyof NestedModel3<Model, K, K2>;
+type NestedModel4<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>
+> = PrepareModel<NestedModel3<Model, K, K2>[K3]>;
+type KeyNestedModel4<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>
+> = keyof NestedModel4<Model, K, K2, K3>;
+type NestedModel5<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>
+> = PrepareModel<NestedModel4<Model, K, K2, K3>[K4]>;
+type KeyNestedModel5<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>
+> = keyof NestedModel5<Model, K, K2, K3, K4>;
+type NestedModel6<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>,
+  K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+> = PrepareModel<NestedModel5<Model, K, K2, K3, K4>[K5]>;
+type KeyNestedModel6<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>,
+  K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+> = keyof NestedModel6<Model, K, K2, K3, K4, K5>;
+type NestedModel7<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>,
+  K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+  K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+> = PrepareModel<NestedModel6<Model, K, K2, K3, K4, K5>[K6]>;
+type KeyNestedModel7<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>,
+  K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+  K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+> = keyof NestedModel7<Model, K, K2, K3, K4, K5, K6>;
+type NestedModel8<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>,
+  K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+  K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>,
+  K7 extends KeyNestedModel7<Model, K, K2, K3, K4, K5, K6>
+> = PrepareModel<NestedModel7<Model, K, K2, K3, K4, K5, K6>[K7]>;
+type KeyNestedModel8<
+  Model,
+  K extends KeyNestedModel<Model>,
+  K2 extends KeyNestedModel2<Model, K>,
+  K3 extends KeyNestedModel3<Model, K, K2>,
+  K4 extends KeyNestedModel4<Model, K, K2, K3>,
+  K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+  K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>,
+  K7 extends KeyNestedModel7<Model, K, K2, K3, K4, K5, K6>
+> = keyof NestedModel8<Model, K, K2, K3, K4, K5, K6, K7>;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export interface ImmutableMap<Model, State = Model>
+  extends Immutable.Map<any, any> {
+  keys<K extends keyof State>(): IterableIterator<K>;
+  keySeq<K extends keyof State>(): Seq.Indexed<K>;
+  get<K extends keyof State>(key: K): DetectMap<State[K]>;
+  getIn<K extends keyof State>(
+    searchKeyPath: [K],
+    notSetValue?: any
+  ): DetectMap<State[K]>;
+  getIn<K extends KeyNestedModel<Model>, K2 extends KeyNestedModel2<Model, K>>(
+    searchKeyPath: [K, K2],
+    notSetValue?: any
+  ): DetectMap<NestedModel3<Model, K, K2>>;
+  getIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>
+  >(
+    searchKeyPath: [K, K2, K3],
+    notSetValue?: any
+  ): DetectMap<NestedModel4<Model, K, K2, K3>>;
+  getIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>
+  >(
+    searchKeyPath: [K, K2, K3, K4],
+    notSetValue?: any
+  ): DetectMap<NestedModel5<Model, K, K2, K3, K4>>;
+  getIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+  >(
+    searchKeyPath: [K, K2, K3, K4, K5],
+    notSetValue?: any
+  ): DetectMap<NestedModel6<Model, K, K2, K3, K4, K5>>;
+  getIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+  >(
+    searchKeyPath: [K, K2, K3, K4, K5, K6],
+    notSetValue?: any
+  ): DetectMap<NestedModel7<Model, K, K2, K3, K4, K5, K6>>;
+  getIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>,
+    K7 extends KeyNestedModel7<Model, K, K2, K3, K4, K5, K6>
+  >(
+    searchKeyPath: [K, K2, K3, K4, K5, K6, K7],
+    notSetValue?: any
+  ): DetectMap<NestedModel8<Model, K, K2, K3, K4, K5, K6, K7>>;
+  getIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>,
+    K7 extends KeyNestedModel7<Model, K, K2, K3, K4, K5, K6>,
+    K8 extends KeyNestedModel8<Model, K, K2, K3, K4, K5, K6, K7>
+  >(
+    searchKeyPath: [K, K2, K3, K4, K5, K6, K7, K8],
+    notSetValue?: any
+  ): DetectMap<NestedModel8<Model, K, K2, K3, K4, K5, K6, K7>[K8]>;
+  set<K extends KeyNestedModel<Model>>(
+    key: K,
+    value: DetectMapOrOrigin<NestedModel2<Model, K>>
+  ): this;
+  setIn<K extends KeyNestedModel<Model>>(
+    keyPath: [K],
+    value: DetectMapOrOrigin<NestedModel<Model>[K]>
+  ): this;
+  setIn<K extends KeyNestedModel<Model>, K2 extends KeyNestedModel2<Model, K>>(
+    keyPath: [K, K2],
+    value: DetectMapOrOrigin<NestedModel3<Model, K, K2>>
+  ): this;
+  setIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>
+  >(
+    keyPath: [K, K2, K3],
+    value: DetectMapOrOrigin<NestedModel4<Model, K, K2, K3>>
+  ): this;
+  setIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>
+  >(
+    keyPath: [K, K2, K3, K4],
+    value: DetectMapOrOrigin<NestedModel5<Model, K, K2, K3, K4>>
+  ): this;
+  setIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+  >(
+    keyPath: [K, K2, K3, K4, K5],
+    value: DetectMapOrOrigin<NestedModel6<Model, K, K2, K3, K4, K5>>
+  ): this;
+  setIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+  >(
+    keyPath: [K, K2, K3, K4, K5, K6],
+    value: DetectMapOrOrigin<NestedModel7<Model, K, K2, K3, K4, K5, K6>>
+  ): this;
+  setIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>,
+    K7 extends KeyNestedModel7<Model, K, K2, K3, K4, K5, K6>
+  >(
+    keyPath: [K, K2, K3, K4, K5, K6, K7],
+    value: DetectMapOrOrigin<NestedModel8<Model, K, K2, K3, K4, K5, K6, K7>>
+  ): this;
+  updateIn<K extends KeyNestedModel<Model>>(
+    keyPath: [K],
+    updater: (
+      value: DetectMap<NestedModel2<Model, K>>
+    ) => DetectMap<NestedModel2<Model, K>>
+  ): this;
+  updateIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>
+  >(
+    keyPath: [K, K2],
+    updater: (
+      value: DetectMap<NestedModel3<Model, K, K2>>
+    ) => DetectMap<NestedModel3<Model, K, K2>>
+  ): this;
+  updateIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>
+  >(
+    keyPath: [K, K2, K3],
+    updater: (
+      value: DetectMap<NestedModel4<Model, K, K2, K3>>
+    ) => DetectMap<NestedModel4<Model, K, K2, K3>>
+  ): this;
+  updateIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>
+  >(
+    keyPath: [K, K2, K3, K4],
+    updater: (
+      value: DetectMap<NestedModel5<Model, K, K2, K3, K4>>
+    ) => DetectMap<NestedModel5<Model, K, K2, K3, K4>>
+  ): this;
+  updateIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+  >(
+    keyPath: [K, K2, K3, K4, K5],
+    updater: (
+      value: DetectMap<NestedModel6<Model, K, K2, K3, K4, K5>>
+    ) => DetectMap<NestedModel6<Model, K, K2, K3, K4, K5>>
+  ): this;
+  updateIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+  >(
+    keyPath: [K, K2, K3, K4, K5, K6],
+    updater: (
+      value: DetectMap<NestedModel7<Model, K, K2, K3, K4, K5, K6>>
+    ) => DetectMap<NestedModel7<Model, K, K2, K3, K4, K5, K6>>
+  ): this;
+  updateIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>,
+    K7 extends KeyNestedModel7<Model, K, K2, K3, K4, K5, K6>
+  >(
+    keyPath: [K, K2, K3, K4, K5, K6, K7],
+    updater: (
+      value: DetectMapOrOrigin<NestedModel8<Model, K, K2, K3, K4, K5, K6, K7>>
+    ) => DetectMapOrOrigin<NestedModel8<Model, K, K2, K3, K4, K5, K6, K7>>
+  ): this;
+  merge(value: Partial<State>): this;
+  mergeIn<K extends KeyNestedModel<Model>>(
+    keyPath: [K],
+    value: Partial<NestedModel2<Model, K>>
+  ): this;
+  mergeIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>
+  >(
+    keyPath: [K, K2],
+    value: Partial<NestedModel3<Model, K, K2>>
+  ): this;
+  mergeIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>
+  >(
+    keyPath: [K, K2, K3],
+    value: Partial<NestedModel4<Model, K, K2, K3>>
+  ): this;
+  mergeIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>
+  >(
+    keyPath: [K, K2, K3, K4],
+    value: Partial<NestedModel5<Model, K, K2, K3, K4>>
+  ): this;
+  mergeIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+  >(
+    keyPath: [K, K2, K3, K4, K5],
+    value: Partial<NestedModel6<Model, K, K2, K3, K4, K5>>
+  ): this;
+  mergeIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+  >(
+    keyPath: [K, K2, K3, K4, K5, K6],
+    value: Partial<NestedModel7<Model, K, K2, K3, K4, K5, K6>>
+  ): this;
+  mergeDeepIn<K extends KeyNestedModel<Model>>(
+    keyPath: [K],
+    value: DeepPartial<NestedModel2<Model, K>>
+  ): this;
+  mergeDeepIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>
+  >(
+    keyPath: [K, K2],
+    value: DeepPartial<NestedModel3<Model, K, K2>>
+  ): this;
+  mergeDeepIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>
+  >(
+    keyPath: [K, K2, K3],
+    value: DeepPartial<NestedModel4<Model, K, K2, K3>>
+  ): this;
+  mergeDeepIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>
+  >(
+    keyPath: [K, K2, K3, K4],
+    value: DeepPartial<NestedModel5<Model, K, K2, K3, K4>>
+  ): this;
+  mergeDeepIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>
+  >(
+    keyPath: [K, K2, K3, K4, K5],
+    value: DeepPartial<NestedModel6<Model, K, K2, K3, K4, K5>>
+  ): this;
+  mergeDeepIn<
+    K extends KeyNestedModel<Model>,
+    K2 extends KeyNestedModel2<Model, K>,
+    K3 extends KeyNestedModel3<Model, K, K2>,
+    K4 extends KeyNestedModel4<Model, K, K2, K3>,
+    K5 extends KeyNestedModel5<Model, K, K2, K3, K4>,
+    K6 extends KeyNestedModel6<Model, K, K2, K3, K4, K5>
+  >(
+    keyPath: [K, K2, K3, K4, K5, K6],
+    value: DeepPartial<NestedModel7<Model, K, K2, K3, K4, K5, K6>>
+  ): this;
+  toJS(): Model;
+  toObject(): State;
+  update<K extends keyof State>(
+    key: K,
+    notSetValue: State[K],
+    updater: (value: State[K]) => State[K]
+  ): this;
+  update<K extends keyof State>(
+    key: K,
+    updater: (value: State[K]) => State[K]
+  ): this;
+  update<R>(updater: (value: this) => R): R;
+  withMutations(mutator: (mutable: this) => any): this;
+}
+
+export interface ImmutableList<T> extends Immutable.List<T> {
+  filter(
+    predicate: (value: T, index: number, iter: this) => boolean,
+    context?: T
+  ): this;
+  concat<T>(...valuesOrCollections: Array<Iterable<T> | T>): this;
+  get<K extends keyof T>(key: K): T;
+  push(...values: T[]): this;
+  reduce<R>(
+    reducer: (reduction: R, value: T, key: number, iter: this) => R,
+    initialReduction: R,
+    context?: T
+  ): R;
+  reduce<R>(
+    reducer: (reduction: T | R, value: T, key: number, iter: this) => R
+  ): R;
+  set(index: number, value: T): this;
+  toJS(): T[];
+  unshift(...values: T[]): this;
+  withMutations(mutator: (mutable: this) => any): this;
+}
+
+declare module 'immutable' {
+  function fromJS<T extends Record<string, any>>(arg: T): DetectMapOrOrigin<T>;
+}
